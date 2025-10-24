@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard - K.Ramakrishnan College of Technology</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Ramakrishna College of Technology – Faculty Availability System</h1>
+    <button id="logout-btn">Logout</button>
+  </header>
+
+  <main>
+    <div class="dashboard-container">
+      <h2>Student Dashboard</h2>
+      
+      <div class="filters">
+        <h3>Find Faculty</h3>
+        <div class="form-group">
+          <label for="department-filter">Department:</label>
+          <select id="department-filter">
+            <option value="">All</option>
+            <option value="AIDS">AIDS</option>
+            <option value="EEE">EEE</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="category-filter">Category:</label>
+          <select id="category-filter">
+            <option value="">All</option>
+            <option value="HOD / Associate Professor">HOD</option>
+            <option value="A-HOD / Assistant Professor">A-HOD</option>
+            <option value="Professor">Professor</option>
+            <option value="Assistant Professor">Assistant Professor</option>
+          </select>
+        </div>
+         <div class="form-group">
+          <label for="faculty-name-filter">Faculty Name:</label>
+          <select id="faculty-name-filter">
+            <option value="">All</option>
+            <!-- Options populated dynamically -->
+          </select>
+        </div>
+      </div>
+
+      <div id="faculty-list" class="faculty-list-container">
+        <!-- Faculty availability will be dynamically loaded here -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Booking Modal -->
+  <div id="booking-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>Book a Meeting</h3>
+      <form id="booking-form">
+        <p>Booking with: <strong id="modal-faculty-name"></strong></p>
+        <input type="hidden" id="modal-faculty-id">
+        <div class="form-group">
+          <label for="scheduled-time">Preferred Time:</label>
+          <input type="text" id="scheduled-time" required placeholder="e.g., 3:30 PM">
+        </div>
+        <div class="form-group">
+          <label for="reason">Reason for Meeting:</label>
+          <textarea id="reason" rows="3" required placeholder="e.g., Project Discussion"></textarea>
+        </div>
+        <button type="submit">Request Appointment</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>Developed by [Your Startup Name] | Ramakrishna College of Technology</p>
+  </footer>
+
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="script.js"></script>
+
+  <script type="module">
+    // Populate faculty-name dropdown from Firestore 'faculty' collection when available.
+    // Use dynamic imports so failures don't prevent the fallback from working.
+
+    // Embedded fallback faculty data (subset). Expand as needed.
+    const localFacultyData = [
+      { name: "Mrs M.A. Reetha Jeyarani", department: "AIDS", email: "reethajeyarani@rkct.edu" },
+      { name: "Ms S Murugavalli", department: "AIDS", email: "murugavalli@rkct.edu" },
+      { name: "Mrs E Sri Santhoshini", department: "AIDS", email: "srisanthoshini@rkct.edu" },
+      { name: "Mrs D Deena Rose", department: "AIDS", email: "deenarose@rkct.edu" },
+      { name: "Mr P.B Aravind Prasad", department: "AIDS", email: "aravindprasad@rkct.edu" },
+      { name: "Mr T Praveenkumar", department: "AIDS", email: "praveenkumar@rkct.edu" },
+      { name: "Mrs A Sumathi", department: "AIDS", email: "sumathi@rkct.edu" },
+      { name: "Mr R Roshan Joshua", department: "AIDS", email: "roshanjoshua@rkct.edu" },
+      { name: "Mr Joshuva Isaac", department: "AIDS", email: "joshuvaisaac@rkct.edu" },
+      { name: "Mrs G Nalina Keerthana", department: "AIDS", email: "nalinakeerthana@rkct.edu" },
+      { name: "Mrs Geetha S", department: "AIDS", email: "geethas@rkct.edu" },
+      { name: "Mrs Joany Franklin", department: "AIDS", email: "joanyfranklin@rkct.edu" },
+      { name: "Mr T Shyamsundar", department: "AIDS", email: "shyamsundar@rkct.edu" },
+      { name: "Ms M Bharathi", department: "AIDS", email: "bharathi@rkct.edu" },
+      { name: "Mr Ganga Naidu K", department: "AIDS", email: "ganganaidu@rkct.edu" },
+      { name: "Ms R Swethabharathi", department: "AIDS", email: "swethabharathi@rkct.edu" },
+      { name: "Mr C Muthukumaran", department: "AIDS", email: "muthukumaran@rkct.edu" },
+      { name: "Dr T Avudaiappan", department: "AIDS", email: "avudaiappan@rkct.edu" },
+      { name: "Ms A.Anton Amala Praveen", department: "EEE", email: "amalapraveen@rkct.edu" },
+      { name: "Mr T.Ramkumar", department: "EEE", email: "ramkumar@rkct.edu" },
+      { name: "Mr M.D. Udaya Kumar", department: "EEE", email: "udayakumar@rkct.edu" },
+      { name: "Ms S.Vijaya Lakshmi", department: "EEE", email: "vijayalakshmi@rkct.edu" },
+      { name: "Dr R. Jai Ganesh", department: "EEE", email: "jaiganesh@rkct.edu" },
+      { name: "Mr V Sureshkumar", department: "EEE", email: "sureshkumar@rkct.edu" },
+      { name: "Dr S Jeyasudha", department: "EEE", email: "jeyasudha@rkct.edu" },
+      { name: "Dr R.Madavan", department: "EEE", email: "madavan@rkct.edu" },
+      { name: "Dr J Mahil", department: "EEE", email: "mahil@rkct.edu" },
+      { name: "Mr P Sekar", department: "EEE", email: "sekar@rkct.edu" },
+      { name: "Mr P Prakash", department: "EEE", email: "prakash@rkct.edu" },
+      { name: "Dr AT Sankara Subramanian", department: "EEE", email: "sankarasubramanian@rkct.edu" }
+    ];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const facultySelect = document.getElementById('faculty-name-filter');
+      const deptSelect = document.getElementById('department-filter');
+      const catSelect = document.getElementById('category-filter');
+      const listContainer = document.getElementById('faculty-list');
+      if (!facultySelect || !listContainer) return;
+
+      // master list of entries (objects: { id, name, dept, designation, available, tentative_time })
+      let entries = [];
+
+      async function loadFromFirestore() {
+        try {
+          // dynamic import so failures won't block the script
+          const firestore = await import('https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js');
+          const fb = await import('./firebase.js');
+          const { collection, getDocs, query, orderBy } = firestore;
+          const db = fb.db;
+          console.log('Firestore available, loading faculty collection...');
+          const q = query(collection(db, 'faculty'), orderBy('name'));
+          const snap = await getDocs(q);
+          const map = new Map();
+          snap.forEach(doc => {
+            const data = doc.data() || {};
+            const name = (data.name || '').trim();
+            if (!name) return;
+            const key = name.toLowerCase();
+            if (!map.has(key)) {
+              map.set(key, {
+                id: data.email || doc.id,
+                name,
+                dept: data.department || '',
+                designation: data.designation || data.role || '',
+                available: !!data.available,
+                tentative_time: data.tentative_time || ''
+              });
+            }
+          });
+          entries = Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+          console.log('Firestore returned', entries.length, 'faculty');
+          return entries.length > 0;
+        } catch (err) {
+          console.warn('Firestore load failed or blocked in this environment, will use local data. Error:', err && err.message ? err.message : err);
+          return false;
+        }
+      }
+
+      function loadFromLocal() {
+        const map = new Map();
+        for (const f of localFacultyData) {
+          const name = (f.name || '').trim();
+          if (!name) continue;
+          const key = name.toLowerCase();
+          if (!map.has(key)) map.set(key, { id: f.email || name, name, dept: f.department || '', designation: f.designation || '', available: false, tentative_time: '' });
+        }
+        entries = Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+        console.log('Loaded', entries.length, 'faculty from localFacultyData');
+      }
+
+      function populateFacultySelect(department) {
+        facultySelect.innerHTML = '';
+        const allOpt = document.createElement('option');
+        allOpt.value = '';
+        allOpt.textContent = 'All';
+        facultySelect.appendChild(allOpt);
+
+        const filtered = department ? entries.filter(e => (e.dept || '').toLowerCase() === department.toLowerCase()) : entries;
+        for (const e of filtered) {
+          const opt = document.createElement('option');
+          opt.value = e.id || e.name;
+          opt.textContent = e.name + (e.dept ? ' — ' + e.dept : '');
+          facultySelect.appendChild(opt);
+        }
+        console.log('populateFacultySelect: added', Math.max(0, facultySelect.options.length - 1), 'options (excluding All) for department', department || 'All');
+
+        // Notify other code that the faculty select changed
+        facultySelect.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      function renderList(items) {
+        listContainer.innerHTML = '';
+        if (!items || items.length === 0) {
+          listContainer.innerHTML = '<p>No faculty match the selected filters.</p>';
+          return;
+        }
+        const wrap = document.createElement('div');
+        wrap.className = 'faculty-cards';
+        for (const f of items) {
+          const card = document.createElement('div');
+          card.className = 'faculty-card';
+          card.innerHTML = `<h4>${f.name}</h4>
+            <p><strong>Department:</strong> ${f.dept || '—'}</p>
+            <p><strong>Designation:</strong> ${f.designation || '—'}</p>
+            <p><strong>Status:</strong> ${f.available ? 'Available' : 'Not Available'}</p>
+            <p><strong>Tentative:</strong> ${f.tentative_time || '—'}</p>`;
+          wrap.appendChild(card);
+        }
+        listContainer.appendChild(wrap);
+      }
+
+      function applyFilters() {
+        const dept = deptSelect ? (deptSelect.value || '').trim() : '';
+        const cat = catSelect ? (catSelect.value || '').trim().toLowerCase() : '';
+        const fac = facultySelect ? (facultySelect.value || '').trim() : '';
+
+        let result = entries.slice();
+        if (dept) result = result.filter(e => (e.dept || '').toLowerCase() === dept.toLowerCase());
+        if (cat) result = result.filter(e => ((e.designation || '').toLowerCase()).includes(cat));
+        if (fac) result = result.filter(e => (e.id || e.name) === fac);
+
+        renderList(result);
+      }
+
+      // Attempt Firestore first; fall back to local data if not available or empty
+      const ok = await loadFromFirestore();
+      if (!ok) loadFromLocal();
+
+      // populate initially based on current department selection
+      populateFacultySelect(deptSelect ? deptSelect.value : '');
+
+      // When department/category/faculty changes, apply filters
+      if (deptSelect) deptSelect.addEventListener('change', () => { populateFacultySelect(deptSelect.value); applyFilters(); });
+      if (catSelect) catSelect.addEventListener('change', () => applyFilters());
+      facultySelect.addEventListener('change', () => applyFilters());
+
+      // Initial render
+      applyFilters();
+    });
+  </script>

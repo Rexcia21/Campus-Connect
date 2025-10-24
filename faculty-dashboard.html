@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard - Ramakrishna College of Technology</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>K.Ramakrishnan College of Technology – Faculty Availability System</h1>
+        <button id="logout-btn">Logout</button>
+    </header>
+
+    <main>
+        <div class="dashboard-container">
+            <h2>Faculty Dashboard</h2>
+            <div id="faculty-details" class="faculty-card">
+                <p><strong>Name:</strong> <span id="faculty-name"></span></p>
+                <p><strong>Department:</strong> <span id="faculty-department"></span></p>
+                <p><strong>Designation:</strong> <span id="faculty-designation"></span></p>
+            </div>
+
+            <div class="availability-manager">
+                <h3>Update Your Availability</h3>
+                <div class="form-group">
+                    <label for="availability-toggle">Status:</label>
+                    <label class="switch">
+                        <input type="checkbox" id="availability-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span id="availability-status">Not Available</span>
+                </div>
+                <div class="form-group">
+                    <label for="tentative-time">Tentative Free Time:</label>
+                    <input type="text" id="tentative-time" placeholder="e.g., 3:00 PM - 4:00 PM">
+                </div>
+                <button id="update-availability-btn">Save Changes</button>
+            </div>
+
+            <div class="appointments-section">
+                <h3>Upcoming Appointments</h3>
+                <div id="appointments-list">
+                    <!-- Appointments will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Developed by [Your Startup Name] | Ramakrishna College of Technology</p>
+    </footer>
+
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="script.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Protect page: require a session set by login (demo uses sessionStorage)
+        const loggedIn = sessionStorage.getItem('loggedIn');
+        const role = sessionStorage.getItem('role');
+        if (!loggedIn || role !== 'faculty') {
+          // If not logged in as faculty, redirect to login page
+          window.location.href = 'index.html';
+          return;
+        }
+
+        // Elements
+        const nameEl = document.getElementById('faculty-name');
+        const deptEl = document.getElementById('faculty-department');
+        const desigEl = document.getElementById('faculty-designation');
+        const availabilityToggle = document.getElementById('availability-toggle');
+        const availabilityStatus = document.getElementById('availability-status');
+        const tentativeTime = document.getElementById('tentative-time');
+        const updateBtn = document.getElementById('update-availability-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const appointmentsList = document.getElementById('appointments-list');
+
+        // Load basic profile from sessionStorage (demo)
+        const email = sessionStorage.getItem('email') || '';
+        const name = sessionStorage.getItem('name') || (email ? email.split('@')[0] : 'Faculty');
+        // Placeholder department/designation; replace with real data if available
+        const department = sessionStorage.getItem('department') || 'Computer Science';
+        const designation = sessionStorage.getItem('designation') || 'Assistant Professor';
+
+        nameEl.textContent = name;
+        deptEl.textContent = department;
+        desigEl.textContent = designation;
+
+        // Availability key per faculty (by email)
+        const availKey = 'availability_' + (email || 'anon');
+        const saved = JSON.parse(localStorage.getItem(availKey) || '{}');
+
+        availabilityToggle.checked = !!saved.available;
+        availabilityStatus.textContent = availabilityToggle.checked ? 'Available' : 'Not Available';
+        tentativeTime.value = saved.time || '';
+
+        availabilityToggle.addEventListener('change', () => {
+          availabilityStatus.textContent = availabilityToggle.checked ? 'Available' : 'Not Available';
+        });
+
+        updateBtn.addEventListener('click', () => {
+          const toSave = {
+            available: availabilityToggle.checked,
+            time: tentativeTime.value.trim(),
+            updatedAt: new Date().toISOString()
+          };
+          localStorage.setItem(availKey, JSON.stringify(toSave));
+          // Optionally propagate this to server/Firebase in real app
+          alert('Availability saved.');
+        });
+
+        logoutBtn.addEventListener('click', () => {
+          sessionStorage.clear();
+          window.location.href = 'index.html';
+        });
+
+        // Load appointments (demo uses localStorage). Replace with server calls as needed.
+        const apptsKey = 'appointments_' + (email || 'anon');
+        const appts = JSON.parse(localStorage.getItem(apptsKey) || '[]');
+
+        function renderAppointments(list) {
+          appointmentsList.innerHTML = '';
+          if (!list || list.length === 0) {
+            appointmentsList.innerHTML = '<p>No upcoming appointments.</p>';
+            return;
+          }
+          const ul = document.createElement('ul');
+          list.forEach(a => {
+            const li = document.createElement('li');
+            li.textContent = (a.time ? a.time + ' - ' : '') + (a.with || 'Student') + (a.note ? ' (' + a.note + ')' : '');
+            ul.appendChild(li);
+          });
+          appointmentsList.appendChild(ul);
+        }
+
+        renderAppointments(appts);
+      });
+    </script>
+</body>
+</html>

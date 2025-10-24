@@ -1,0 +1,292 @@
+/* General Body Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #F9F9F9;
+    color: #333;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header Styles */
+header {
+    background-color: #002B5B;
+    color: #F9F9F9;
+    padding: 1rem 2rem;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+#logout-btn {
+    background-color: #FDC500;
+    color: #002B5B;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Main Content Styles */
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.login-container, .dashboard-container {
+    background-color: #FFFFFF;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+.dashboard-container {
+    max-width: 800px;
+}
+
+h2 {
+    color: #002B5B;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button[type="submit"], #update-availability-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #002B5B;
+    color: #F9F9F9;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover, #update-availability-btn:hover {
+    background-color: #004080;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #002B5B;
+    color: #F9F9F9;
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto;
+}
+
+/* Faculty Dashboard Specifics */
+.faculty-card {
+    background-color: #f0f4f8;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+}
+
+.availability-manager {
+    margin-bottom: 1.5rem;
+}
+
+/* Availability Toggle Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50; /* Green for available */
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+#availability-status {
+    margin-left: 1rem;
+    font-weight: 600;
+}
+
+/* Student Dashboard Specifics */
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.faculty-list-container {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.faculty-list-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.faculty-list-card h4 {
+    margin-top: 0;
+    color: #002B5B;
+}
+
+.faculty-list-card .status {
+    font-weight: 600;
+}
+
+.faculty-list-card .status.available {
+    color: #4CAF50;
+}
+
+.faculty-list-card .status.unavailable {
+    color: #f44336;
+}
+
+.book-meeting-btn {
+    background-color: #FDC500;
+    color: #002B5B;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 1rem;
+    display: inline-block;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    header h1 {
+        margin-bottom: 1rem;
+    }
+
+    .filters {
+        flex-direction: column;
+    }
+}
